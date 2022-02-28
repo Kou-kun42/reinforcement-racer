@@ -1,0 +1,12 @@
+From what I've learned, I think the NEAT algorithm is most effective when dealing
+with tasks that are less complex and don't require many different features.  The
+efficient approach it takes to evolving the topology and computing node weights
+as the network grows makes it faster than some other algorithms.
+Another algorithm that might work well for this project is a Deep Q Network
+Hindsight Experience Replay algorithm.  This algorithm builds off of
+DQNs which use discrete states built from optimal scalar values of action value
+function Q.  HERs optimize the reward schema by incorporating general reward states
+as well as desired reward states.  As I mentioned in the TODO questions, our current
+model is optimized purely off of distance traveled.  However, I think introducing a
+time based reward schema might be beneficial as this could further incentive speed
+which would increase the distance traveled within a generation.
