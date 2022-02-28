@@ -53,6 +53,17 @@ def racecar_simulator(genomes, configurations):
         # TODO: What type of neural network is designed here? 
         # TODO: Can we utilize more advanced neural networks instead?
         # TODO: What is the tradeoff of using higher-order and/or lower-order networks? 
+        """
+        This project uses a Feedforward Neural Network.  It only sends information forward 
+        to the following nodes, and does not create cycles or loops between the input and
+        output layers.  It's a simple network that is easy to implement, but has a tradeoff
+        of overfitting to the training set which could reduce the model's useability in
+        other applications.  We could use a Deep Q-Learning network which uses the 
+        state-action value function to approximate optimal Q values that allow the model
+        to select ideal actions based on state data.  We could also implement experience 
+        replay by reintroducing random samples of past data which would allow for better
+        data efficiency and better stability with uncorrelated transitions.
+        """
         model = neat.nn.FeedForwardNetwork.create(genome, configurations)
         
         # Save instantiated models with (re)set genetic training counter
@@ -90,6 +101,14 @@ def racecar_simulator(genomes, configurations):
             # TODO: Explain how policy selection works here – how are choices selected
             #       across our reinforcement learning agent? What do those choices
             #       actually do for our game-playing bot? 
+            """
+            We're using the values generated from the activate function of the 
+            FeedForwardNetwork using the actions from CarAgent.get_actions() as our
+            input.  We're then using the index of the max output to select a choice
+            from the listings below.  The actions are computed using the distance values
+            from the radars on the car that sense where the car is in relation the the boundaries.
+            The choices either change the angle of the car, or increase/decrease the car speed.
+            """
             if choice == 0:
                 agent.angle += 10
             elif choice == 1:
@@ -103,6 +122,11 @@ def racecar_simulator(genomes, configurations):
         # Check if RL Agent is alive and optimize rewarding schema
         # TODO: Explain how the rewards are selected here – how is the 
         #       rewarding schema related to the model's training fitness?
+        """
+        Rewards are selected if the car is still alive, and they are based on
+        the distance the car has traveled.  The model's fitness function is set
+        to max stagnation, so a higher fitness indicates more desirable traits.
+        """
         still_alive = 0
         for iteration, agent in enumerate(agents):
             if agent.is_alive():

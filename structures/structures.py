@@ -81,17 +81,26 @@ class CarAgent:
         # TODO: Explain what the following three lines of code are doing.
         #       What values are we trying to calculate and what impact does
         #       that data have on our overall project?
+        """
+        This method calculates the new X Y coordinate locations based on the
+        change in angle and current length between the point and the origin.
+        This is used to update the radars surrounding the car to match with
+        the boundaries of the map.  This is critical as it is the main way
+        the car will 'see'.
+        """
         dX = math.cos(math.radians(360 - (self.angle + degree))) * length
         dY = math.sin(math.radians(360 - (self.angle + degree))) * length
         return int(self.center[0] + dX), int(self.center[1] + dY)
 
     def __calculate_distance__(self, X, Y):
         """ Helper method to calculate Euclidean distance between original and updated coordinates. """
-        ΔX, ΔY = X - self.center[0], Y - self.center[1]
+        # Don't need the deltas with the math.dist function
+        # ΔX, ΔY = X - self.center[0], Y - self.center[1]
         # TODO: Utilize the `math` repository and your understanding
         #       of basic algebra to complete the Euclidean distance
         #       function algorithm below. (HINT: It's the basic 
         #       distance function you learn in algebra!)
+        # Using math.dist to do the calculation instead of manually using the equation
         return math.dist([self.center[0], self.center[1]], [X, Y])
 
     def check_radar(self, degree, environment):
@@ -113,6 +122,15 @@ class CarAgent:
         # TODO: This is a deceptively complex algorithm at play. Explain
         #       what information is being created and iterated across and 
         #       why this matters for our reinforcement learning algorithm.
+        """
+        This is used to calculate the corner coordinates of the car.  It works by
+        taking the radius from the center point of the car and using the angle
+        offsets with the _update_coordinates__ method to get the X Y coordinates
+        of each corner.  We need this as the image we are using for the car is
+        represented in pygame from the center point.  By knowing the location of
+        each corner, we can accurately detect when the car is inside the boundaries
+        or when it has collided.
+        """
         TOP_LEFT_OFFSET, TOP_RIGHT_OFFSET, BOTTOM_LEFT_OFFSET, BOTTOM_RIGHT_OFFSET = 30, 150, 210, 330
         corners = list()
         for offset in [TOP_LEFT_OFFSET, TOP_RIGHT_OFFSET, BOTTOM_LEFT_OFFSET, BOTTOM_RIGHT_OFFSET]:
@@ -152,6 +170,14 @@ class CarAgent:
         # TODO: Our `actions` object is a deceptively important data
         #       structures. Explain what this object represents and 
         #       how this data is interpreted/used by our learning algorithm.
+        """
+        This represents the priority of action for our algorithm.  It works
+        by using the distance of each radar sensor and dividing it by 30 to
+        get an integer that scales with the distance between the car and the
+        radar point.  If the car is close to that point, the action number
+        will be smaller.  This is important because the radars tell the
+        algorithm how close the car is to the boundary.
+        """
         radars, actions = self.radars, [0, 0, 0, 0, 0]
         for iteration, radar in enumerate(radars):
             actions[iteration] = int(radar[1] / 30)
@@ -166,6 +192,16 @@ class CarAgent:
         # TODO: Explain how our rewarding schema is expressly calculated.
         # TODO: Are there any other/better ways of selecting rewards for
         #       our reinforcement algorithm?
+        """
+        We're calculating the rewards based on the total distance traveled
+        divided by half of the X parameter of the car.  I'm not sure why
+        we're using this specific amount, but I think using distance traveled
+        is definitly good for the rewards as we want to incentivize that trait.
+        I think a way to improve this would be to incorporate self.time in the
+        calculation.  Ideally, we want the longest distance in the shortest time.
+        It would need a lot of trial and error, but I think adding a deficit
+        based on time related to distance might be beneficial.
+        """
         return self.distance / (self.agent_parameters["X"] / 2)
 
     def rotate_center(self, image, angle):
