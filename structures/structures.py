@@ -92,7 +92,7 @@ class CarAgent:
         #       of basic algebra to complete the Euclidean distance
         #       function algorithm below. (HINT: It's the basic 
         #       distance function you learn in algebra!)
-        return None
+        return math.dist([self.center[0], self.center[1]], [X, Y])
 
     def check_radar(self, degree, environment):
         """ Major method to check and validate positions of car respective to track-path borders. """

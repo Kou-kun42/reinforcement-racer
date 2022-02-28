@@ -46,8 +46,7 @@ def racecar_simulator(genomes, configurations):
     models, agents = list(), list()
 
     # Initialize PyGame utilities for training
-    pygame.init(); screen = pygame.display.set_mode((ENVIRONMENT_PARAMETERS["WIDTH"], ENVIRONMENT_PARAMETERS["HEIGHT"]), 
-                                                     pygame.FULLSCREEN)
+    pygame.init(); screen = pygame.display.set_mode((ENVIRONMENT_PARAMETERS["WIDTH"], ENVIRONMENT_PARAMETERS["HEIGHT"]))
     
     # Iteratively train agent using Deep RL
     for iteration, genome in genomes:
